@@ -2,8 +2,10 @@ package com.example.users.api;
 
 import com.example.users.exception.UserAlreadyExistsException;
 import com.example.users.exception.UserNotFoundException;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,6 +40,20 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
+        Map<String, String> error = new HashMap<>();
+        Throwable cause = ex.getCause();
+        if (cause instanceof UnrecognizedPropertyException unrecognized) {
+            String propertyName = unrecognized.getPropertyName();
+            error.put("error", "Unrecognized field: " + propertyName);
+        } else {
+            error.put("error", "Malformed JSON request");
+        }
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
