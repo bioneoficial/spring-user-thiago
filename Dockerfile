@@ -1,5 +1,5 @@
 # Stage 1: Build the application
-FROM openjdk:21-jdk-slim AS build
+FROM openjdk:21 AS build
 LABEL authors="bionemac"
 LABEL description="This is the Dockerfile for the Users service"
 # Set the working directory
@@ -23,7 +23,7 @@ COPY src src
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Run the application
-FROM openjdk:21-jre-slim
+FROM openjdk:21
 
 # Set the working directory
 WORKDIR /app
