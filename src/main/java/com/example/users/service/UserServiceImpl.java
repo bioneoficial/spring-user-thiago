@@ -2,6 +2,7 @@ package com.example.users.service;
 
 import com.example.users.dto.CreateUserDto;
 import com.example.users.dto.UpdateUserDto;
+import com.example.users.exception.UserAlreadyExistsException;
 import com.example.users.exception.UserNotFoundException;
 import com.example.users.model.User;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> getUserById(Integer id) {
-        return userList.stream().filter(user -> user.getId()==id).findFirst();
+        return userList.stream().filter(user -> user.getId().equals(id)).findFirst();
     }
 
     @Override
@@ -36,6 +37,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(CreateUserDto createUserDto) {
+        Optional<User> existingUser = getUserById(createUserDto.id());
+        if (existingUser.isPresent()) {
+            throw new UserAlreadyExistsException(createUserDto.id());
+        }
         User user = new User(createUserDto.id(), createUserDto.age(), createUserDto.name(), createUserDto.email());
         userList.add(user);
         return user;
