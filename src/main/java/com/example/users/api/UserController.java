@@ -58,7 +58,7 @@ public class UserController {
     public ResponseEntity<User> getUser(
             @Parameter(description = "User ID to be fetched", required = true, example = "1")
             @PathVariable Integer id) {
-        Optional<User> userOpt = userService.getUserById(id);
+        Optional<User> userOpt = Optional.ofNullable(userService.getUserById(id));
         return userOpt.map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseThrow(() -> new com.example.users.exception.UserNotFoundException(id));
     }
@@ -74,6 +74,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)
     })
+
     @PostMapping
     public ResponseEntity<User> createUser(
             @Parameter(description = "User object payload to be created", required = true)

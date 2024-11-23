@@ -1,5 +1,6 @@
 package com.example.users.api;
 
+import com.example.users.exception.PostNotFoundException;
 import com.example.users.exception.UserAlreadyExistsException;
 import com.example.users.exception.UserNotFoundException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -54,6 +55,14 @@ public class GlobalExceptionHandler {
             error.put("error", "Malformed JSON request");
         }
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handlePostNotFoundException(PostNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-
 @Schema(description = "Data Transfer Object for creating a new user")
 public record CreateUserDto(
         @NotBlank(message = "Name must have at least 1 character")
@@ -21,11 +20,6 @@ public record CreateUserDto(
         @NotNull(message = "Age cannot be null")
         @Min(value = 1, message = "Age must be greater than 0")
         @Schema(description = "Age of the user", example = "30", requiredMode = Schema.RequiredMode.REQUIRED)
-        Integer age,
-
-        @NotNull(message = "ID cannot be null")
-        @Min(value = 1, message = "ID must be greater than 0")
-        @Schema(description = "Unique identifier for the user", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-        Integer id
+        Integer age
 ) {
 }
